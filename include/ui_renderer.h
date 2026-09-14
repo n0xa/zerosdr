@@ -25,7 +25,7 @@ public:
     void renderWaterfall(const std::vector<float>& magnitude);
     void renderStatusBar(uint32_t freq, uint32_t span, int gain, const char* freq_input,
                          const char* demod_mode, float volume, bool squelch_open, bool audio_enabled,
-                         bool agc_enabled);
+                         bool agc_enabled, const char* tune_step_label);
 
     void setMode(int mode) { display_mode = mode; }
     int  getMode() const   { return display_mode; }

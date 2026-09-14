@@ -190,6 +190,7 @@ AppKeyCode InputHandler::translateKeyCode(int linux_keycode, bool shift_pressed)
         case KEY_V:        return APPKEY_V;
         case KEY_C:        return APPKEY_C;
         case KEY_S:        return shift_pressed ? APPKEY_SCREENSHOT : APPKEY_S;
+        case KEY_T:        return APPKEY_T;
         case KEY_SPACE:    return APPKEY_SPACE;
         case KEY_Q:        return APPKEY_Q;
         case KEY_ESC:      return APPKEY_ESC;
@@ -211,6 +212,16 @@ AppKeyCode InputHandler::translateKeyCode(int linux_keycode, bool shift_pressed)
         case KEY_9:        return APPKEY_9;
 
         case KEY_DOT:      return APPKEY_DOT;
+        case KEY_KPDOT:    return APPKEY_DOT;  // Some compact keyboards route the Fn-layer decimal point here
+
+        // The CardputerZero keypad's own firmware resolves its Sym-layer decimal
+        // point key to different, otherwise-unused Linux keycodes per hardware
+        // revision (confirmed via live evtest capture, not documented anywhere):
+        //   older units:  Sym+S -> KEY_REPLY
+        //   newer units:  Sym+B -> KEY_HIRAGANA
+        // Map both to the decimal point so frequency entry works on either.
+        case KEY_REPLY:    return APPKEY_DOT;
+        case KEY_HIRAGANA: return APPKEY_DOT;
         case KEY_ENTER:    return APPKEY_ENTER;
         case KEY_BACKSPACE: return APPKEY_BACKSPACE;
 

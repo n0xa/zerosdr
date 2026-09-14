@@ -85,7 +85,7 @@ void UIRenderer::renderWaterfall(const std::vector<float>& magnitude) {
 
 void UIRenderer::renderStatusBar(uint32_t freq, uint32_t span, int gain, const char* freq_input,
                                   const char* demod_mode, float volume, bool squelch_open, bool audio_enabled,
-                                  bool agc_enabled) {
+                                  bool agc_enabled, const char* tune_step_label) {
     // Background
     fb.fillRect(0, STATUSBAR_Y, 320, STATUSBAR_H, COLOR_STATUSBAR);
 
@@ -136,6 +136,11 @@ void UIRenderer::renderStatusBar(uint32_t freq, uint32_t span, int gain, const c
     int span_width = span_len * 7;  // Approximate character width
     int span_x = (320 - span_width) / 2;  // Center horizontally
     fb.drawText(span_x, STATUSBAR_Y + 3, span_str, COLOR_TEXT_DIM);
+
+    // 4b. Tuning step (in the gap between span and the volume bar)
+    char step_str[16];
+    snprintf(step_str, sizeof(step_str), "S:%s", tune_step_label);  // "S:" marks it as step size, not a frequency
+    fb.drawText(190, STATUSBAR_Y + 3, step_str, COLOR_TEXT_DIM);
 
     // 5. Volume bar (right-aligned) - with "VOL" label
     if (audio_enabled) {

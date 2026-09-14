@@ -21,6 +21,7 @@ enum AppKeyCode {
     APPKEY_V,      // Volume up
     APPKEY_C,      // Volume down
     APPKEY_S,      // Adjust squelch
+    APPKEY_T,      // Cycle tuning step size
     APPKEY_SPACE,  // Toggle audio
     APPKEY_Q,
     APPKEY_ESC,

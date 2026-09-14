@@ -128,7 +128,7 @@ int main(int argc, char* argv[]) {
         ui.drawFreqAxis(center_freq, sample_rate, FREQAXIS_Y, FREQAXIS_H);
 
         // Draw status bar
-        ui.renderStatusBar(center_freq, sample_rate, gain, nullptr, "--", 0.0f, false, false, false);
+        ui.renderStatusBar(center_freq, sample_rate, gain, nullptr, "--", 0.0f, false, false, false, "100k");
 
         // Draw dialog on top
         ui.renderDialog(
@@ -262,6 +262,15 @@ int main(int argc, char* argv[]) {
     int nfm_bw_index = 1;  // Default: 12.5kHz
     int am_bw_index = 1;   // Default: 10kHz
 
+    // Tuning step presets, for landing on non-broadcast channel spacings
+    // (NOAA/marine/GMRS/ham repeaters etc. outside the 100kHz FM grid)
+    const uint32_t tune_steps[] = {100000, 50000, 25000, 12500, 10000, 6250, 5000};
+    // Exact labels, not derived via float formatting: formatFrequency()'s 1-decimal
+    // rounding turns 6.25 into "6.2" (float imprecision lands the .5 rounding down).
+    const char* tune_step_labels[] = {"100k", "50k", "25k", "12.5k", "10k", "6.25k", "5k"};
+    int tune_step_index = 0;  // Default: 100 kHz
+    uint32_t tune_step = tune_steps[tune_step_index];
+
     // Helper function to get current demodulation bandwidth
     auto getCurrentDemodBandwidth = [&]() -> uint32_t {
         switch (demod_mode) {
@@ -313,7 +322,7 @@ int main(int argc, char* argv[]) {
             const char* input_display = (freq_input_len > 0) ? freq_input_buffer : nullptr;
             ui.renderStatusBar(sdr.getFrequency(), display_span, sdr.getGain(), input_display,
                                demod_names[demod_mode], volume, demod.isSquelchOpen(), audio_enabled,
-                               sdr.getAGCEnabled());
+                               sdr.getAGCEnabled(), tune_step_labels[tune_step_index]);
 
             // Audio demodulation (use all samples for better audio quality)
             if (audio_enabled && audio_output.isOpen()) {
@@ -395,7 +404,7 @@ int main(int argc, char* argv[]) {
             case APPKEY_RIGHT: {
                 // Accelerate based on hold duration
                 int hold_ms = input.getHoldDuration(APPKEY_RIGHT);
-                int step = 100000;  // Base: 100 kHz
+                int step = tune_step;  // Base: user-selected tuning step
                 if (hold_ms > 2000) step = 1000000;      // 1 MHz after 2s
                 else if (hold_ms > 1000) step = 500000;  // 500 kHz after 1s
                 else if (hold_ms > 500) step = 250000;   // 250 kHz after 0.5s
@@ -405,7 +414,7 @@ int main(int argc, char* argv[]) {
             }
             case APPKEY_LEFT: {
                 int hold_ms = input.getHoldDuration(APPKEY_LEFT);
-                int step = 100000;
+                int step = tune_step;
                 if (hold_ms > 2000) step = 1000000;
                 else if (hold_ms > 1000) step = 500000;
                 else if (hold_ms > 500) step = 250000;
@@ -576,6 +585,13 @@ int main(int argc, char* argv[]) {
                     std::cout << "Squelch: " << (int)(squelch * 100) << "%" << std::endl;
                     demod.setSquelch(squelch);
                 }
+                break;
+            }
+            case APPKEY_T: {
+                // Cycle tuning step size: 100k -> 50k -> 25k -> 12.5k -> 10k -> 6.25k -> 5k -> (wrap)
+                tune_step_index = (tune_step_index + 1) % 7;
+                tune_step = tune_steps[tune_step_index];
+                std::cout << "Tune step: " << tune_step_labels[tune_step_index] << std::endl;
                 break;
             }
             case APPKEY_SPACE:
