@@ -15,8 +15,8 @@ AudioDemodulator::AudioDemodulator(uint32_t sdr_sample_rate, uint32_t audio_samp
       demod_bandwidth(200000),  // Default: 200 kHz for FM
       agc_gain(1.0f),
       agc_target(0.3f),      // Target RMS level (30% of full scale)
-      agc_attack(0.01f),     // Fast attack for loud signals
-      agc_decay(0.001f),     // Slow decay for weak signals
+      agc_attack(0.05f),     // Fast attack for loud signals
+      agc_decay(0.03f),      // Slow decay for weak signals
       agc_enabled(true),
       prev_sample(0.0f, 0.0f),
       deemph_state(0.0f),
