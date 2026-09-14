@@ -217,7 +217,13 @@ int main(int argc, char* argv[]) {
     AudioDemodulator demod(sample_rate, 48000);
     AudioOutput audio_output;
     bool audio_enabled = true;  // Audio starts enabled
-    if (!audio_output.init("default", 48000, 1)) {
+    // Prefer the PipeWire ALSA plugin: on CardputerZero, APPLaunch holds an
+    // exclusive PipeWire stream on the sole hardware PCM (hw:1,0 / ES8389),
+    // so raw "default" (which asound.conf routes straight to hw:1,0) fails
+    // to open while APPLaunch is running. Fall back to "default" for setups
+    // without PipeWire.
+    if (!audio_output.init("pipewire", 48000, 1) &&
+        !audio_output.init("default", 48000, 1)) {
         std::cerr << "Warning: audio output disabled" << std::endl;
         audio_enabled = false;  // Disable if init fails
     } else {
