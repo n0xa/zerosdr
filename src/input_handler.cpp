@@ -21,6 +21,8 @@ InputHandler::~InputHandler() {
 bool InputHandler::init(const char* device_path) {
     if (device_path == nullptr) {
         const char* try_paths[] = {
+            "/dev/input/cardputer-zero-internal",
+            "/dev/input/by-path/platform-3f804000.i2c-event",
             "/dev/input/by-id/usb-XING_WEI_2.4G_USB_USB_Composite_Device-if02-event-kbd",
             "/dev/input/event0",
             "/dev/input/event1",
