@@ -83,6 +83,13 @@ install(TARGETS zerosdr DESTINATION bin)
 install(FILES share/applications/zerosdr.desktop DESTINATION share/applications)
 install(FILES share/images/zerosdr.png DESTINATION share/zerosdr/images)
 
+# M5CardputerZero APPLaunch carousel integration
+# APPLaunch resolves relative Icon= paths against /usr/share/APPLaunch/, unlike the
+# standard XDG entry above which needs the absolute path. Separate files, not a
+# symlink, because the two launchers need different Icon= conventions.
+install(FILES share/APPLaunch/zerosdr.desktop DESTINATION share/APPLaunch/applications)
+install(FILES share/images/zerosdr.png DESTINATION share/APPLaunch/share/images)
+
 # CPack configuration for DEB packaging
 set(CPACK_GENERATOR "DEB")
 set(CPACK_PACKAGE_NAME "zerosdr")

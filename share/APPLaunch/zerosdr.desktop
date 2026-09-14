@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=zeroSDR
+Comment=Lightweight SDR Receiver with FM/NFM/AM demodulation
+Exec=/usr/bin/zerosdr
+Icon=share/images/zerosdr.png
+Terminal=false
+Categories=HamRadio;Utility;AudioVideo;
+Keywords=SDR;Radio;RTL-SDR;Spectrum;Demodulation;
+StartupNotify=false
